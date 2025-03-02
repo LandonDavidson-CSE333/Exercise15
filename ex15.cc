@@ -11,15 +11,17 @@
 #include <sys/types.h>
 #include <iostream>
 
-// Takes argc and argv and returns the hostname, port number, and opened file as output params
+// Takes argc and argv and returns the hostname,
+// port number, and opened file as output params
 // Will print errors and return false on failure, true on success
 bool processInput(int argc, char** argv, char** hostname, int *port, int *fd);
 
-// Takes hostname and port and returns a connected socket fd through output param
+// Takes hostname and port and returns a
+// connected socket fd through output param
 // Will return false on failure with error messages to cerr, and true on success
 bool openConnection(char *hostname, int port, int *socket_fd);
 
-int main (int argc, char** argv) {
+int main(int argc, char** argv) {
   // Attempt to process input and open file with processInput
   char* hostname;
   int port;
@@ -71,7 +73,8 @@ int main (int argc, char** argv) {
         if (errno == EINTR) {
           continue;
         }
-        std::cerr << "Failed to write to connection: " << strerror(errno) << std::endl;
+        std::cerr << "Failed to write to connection: "
+                  << strerror(errno) << std::endl;
         close(socket);
         close(input);
         return EXIT_FAILURE;
@@ -152,7 +155,8 @@ bool openConnection(char *hostname, int port, int *socket_fd) {
   }
 
   // Attempt to connect server to socket
-  int connection_res = connect(*socket_fd, reinterpret_cast<sockaddr*>(&server_addr), server_addr_len);
+  int connection_res = connect(*socket_fd,
+          reinterpret_cast<sockaddr*>(&server_addr), server_addr_len);
   if (connection_res == -1) {
     // Failed to connect to hostname
     std::cerr << "Connection failed: " << strerror(errno) << std::endl;
