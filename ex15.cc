@@ -122,18 +122,18 @@ bool openConnection(char *hostname, int port, int *socket_fd) {
   hints.ai_socktype = SOCK_STREAM;
   int addr_ret;
   if ((addr_ret = getaddrinfo(hostname, nullptr, &hints, &results)) != 0) {
-    // If getaddrinfo fails print an error withgai_tstrerror
+    // If getaddrinfo fails print an error with gai_strerror
     std::cerr << "Failed to get address for hostname " << hostname
               << " with error: " << gai_strerror(addr_ret) << std::endl;
     return false;
   }
 
-  // Add port number to results depending on familt
+  // Add port number to results depending on family
   if (results->ai_family == AF_INET6) {
-    sockaddr_in6 *v6 = reinterpret_cast<sockaddr_in6*>(results->ai_addr);
+    auto v6 = reinterpret_cast<sockaddr_in6*>(results->ai_addr);
     v6->sin6_port = htons(port);
   } else if (results-> ai_family == AF_INET) {
-    sockaddr_in *v4 = reinterpret_cast<sockaddr_in*>(results->ai_addr);
+    auto v4 = reinterpret_cast<sockaddr_in*>(results->ai_addr);
     v4->sin_port = htons(port);
   } else {
     // Fail if we don't recognize the ip family
