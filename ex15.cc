@@ -10,6 +10,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <iostream>
+#include <climits>
 
 // Takes argc and argv and returns the hostname,
 // port number, and opened file as output params
@@ -98,12 +99,16 @@ bool processInput(int argc, char **argv, char** hostname, int *port, int *fd) {
   // Copy hostname to output
   *hostname = argv[1];
 
-  // Convert port to a short
-  if (sscanf(argv[2], "%hu", port) != 1) {
+  // Convert port to an int
+  int int_port = std::stoi(argv[2]);
+  // Check the port is within the short bounds
+  if (int_port > USHRT_MAX || int_port < 1024) {
     // second arg wasn't a short
-    std::cerr << "Please enter a port number between 1024 and 65535\n";
+    std::cerr << "Please enter a port number between 1024 and " << USHRT_MAX << std::endl;
     return false;
   }
+  // Cast to a short
+  *port = static_cast<short>(int_port);
 
   // Attempt to open file for reading
   *fd = open(argv[3], O_RDONLY);
