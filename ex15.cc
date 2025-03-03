@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
     // Attempt to write the bytes we read to the server
     ssize_t bytes_left = num_read;
     while (bytes_left > 0) {
-      ssize_t num_wrote = write(socket, buf, num_read);
+      ssize_t num_wrote = write(socket, buf + (num_read - bytes_left), bytes_left);
       // If write failed give a message and close gracefully
       if (num_wrote == 0) {
         std::cerr << "Connection closed prematurely\n";
