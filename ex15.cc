@@ -15,7 +15,7 @@
 // Takes argc and argv and returns the hostname,
 // port number, and opened file as output params
 // Will print errors and return false on failure, true on success
-bool processInput(int argc, char** argv, char** hostname, int *port, int *fd);
+bool processInput(int argc, char** argv, char** hostname, uint16_t *port, int *fd);
 
 // Takes hostname and port and returns a
 // connected socket fd through output param
@@ -25,7 +25,7 @@ bool openConnection(char *hostname, int port, int *socket_fd);
 int main(int argc, char** argv) {
   // Attempt to process input and open file with processInput
   char* hostname;
-  int port;
+  uint16_t port;
   int input;
   if (!processInput(argc, argv, &hostname,  &port, &input)) {
     // Error messages were printed by processInput
@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
   return EXIT_SUCCESS;
 }
 
-bool processInput(int argc, char **argv, char** hostname, int *port, int *fd) {
+bool processInput(int argc, char **argv, char** hostname, uint16_t *port, int *fd) {
   // Ensure we have the 3 arguments
   if (argc != 4) {
     std::cerr << "ex15 requires 3 arguments: hostname port local_file\n";
@@ -100,7 +100,7 @@ bool processInput(int argc, char **argv, char** hostname, int *port, int *fd) {
   *hostname = argv[1];
 
   // Convert port to an int
-  int int_port = std::stoi(argv[2]);
+  uint32_t int_port = static_cast<uint32_t>(std::stoul(argv[2]));
   // Check the port is within the short bounds
   if (int_port > USHRT_MAX || int_port < 1024) {
     // second arg wasn't a short
@@ -108,7 +108,7 @@ bool processInput(int argc, char **argv, char** hostname, int *port, int *fd) {
     return false;
   }
   // Cast to a short
-  *port = static_cast<short>(int_port);
+  *port = static_cast<uint16_t>(int_port);
 
   // Attempt to open file for reading
   *fd = open(argv[3], O_RDONLY);
