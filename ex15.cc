@@ -16,7 +16,8 @@
 // Takes argc and argv and returns the hostname,
 // port number, and opened file as output params
 // Will print errors and return false on failure, true on success
-bool processInput(int argc, char** argv, char** hostname, uint16_t *port, int *fd);
+bool processInput(int argc, char** argv,
+                  char** hostname, uint16_t *port, int *fd);
 
 // Takes hostname and port and returns a
 // connected socket fd through output param
@@ -62,7 +63,8 @@ int main(int argc, char** argv) {
     // Attempt to write the bytes we read to the server
     ssize_t bytes_left = num_read;
     while (bytes_left > 0) {
-      ssize_t num_wrote = write(socket, buf + (num_read - bytes_left), bytes_left);
+      ssize_t num_wrote = write(socket,
+                          buf + (num_read - bytes_left), bytes_left);
       // If write failed give a message and close gracefully
       if (num_wrote == 0) {
         std::cerr << "Connection closed prematurely\n";
@@ -90,7 +92,8 @@ int main(int argc, char** argv) {
   return EXIT_SUCCESS;
 }
 
-bool processInput(int argc, char **argv, char** hostname, uint16_t *port, int *fd) {
+bool processInput(int argc, char **argv,
+                  char** hostname, uint16_t *port, int *fd) {
   // Ensure we have the 3 arguments
   if (argc != 4) {
     std::cerr << "ex15 requires 3 arguments: hostname port local_file\n";
@@ -105,7 +108,8 @@ bool processInput(int argc, char **argv, char** hostname, uint16_t *port, int *f
   // Check the port is within the short bounds
   if (int_port > USHRT_MAX || int_port < 1024) {
     // second arg wasn't a short
-    std::cerr << "Please enter a port number between 1024 and " << USHRT_MAX << std::endl;
+    std::cerr << "Please enter a port number between 1024 and "
+              << USHRT_MAX << std::endl;
     return false;
   }
   // Cast to a short
