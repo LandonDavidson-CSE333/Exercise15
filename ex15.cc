@@ -2,6 +2,7 @@
 // landond@uw.edu
 
 #include <arpa/inet.h>
+#include <cstdint>
 #include <netdb.h>
 #include <cstdlib>
 #include <cstring>
@@ -20,7 +21,7 @@ bool processInput(int argc, char** argv, char** hostname, uint16_t *port, int *f
 // Takes hostname and port and returns a
 // connected socket fd through output param
 // Will return false on failure with error messages to cerr, and true on success
-bool openConnection(char *hostname, int port, int *socket_fd);
+bool openConnection(char *hostname, uint16_t port, int *socket_fd);
 
 int main(int argc, char** argv) {
   // Attempt to process input and open file with processInput
@@ -42,7 +43,7 @@ int main(int argc, char** argv) {
 
   // Read from file and write to connection
   char buf[BUFSIZ];
-  size_t num_read;
+  ssize_t num_read;
   // Repeatedly read BUFSIZ bytes into buf and write back into the socket
   while ((num_read = read(input, buf, BUFSIZ)) != 0) {
     // Check for read errors
@@ -59,9 +60,9 @@ int main(int argc, char** argv) {
     }
 
     // Attempt to write the bytes we read to the server
-    size_t bytes_left = num_read;
+    ssize_t bytes_left = num_read;
     while (bytes_left > 0) {
-      size_t num_wrote = write(socket, buf, num_read);
+      ssize_t num_wrote = write(socket, buf, num_read);
       // If write failed give a message and close gracefully
       if (num_wrote == 0) {
         std::cerr << "Connection closed prematurely\n";
@@ -120,7 +121,7 @@ bool processInput(int argc, char **argv, char** hostname, uint16_t *port, int *f
   return true;
 }
 
-bool openConnection(char *hostname, int port, int *socket_fd) {
+bool openConnection(char *hostname, uint16_t port, int *socket_fd) {
   // Get sockaddr for provided hostname and port
   addrinfo hints = {}, *results;
   hints.ai_family = AF_UNSPEC;
